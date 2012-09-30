@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+  <h1>SlideGraph</h1>
+  <div id="viz"></div>
+</body>
+
+<style>
+
+  .chart {
+     margin-left: 10px;
+  }
+ 
+  .chart rect {
+     fill: steelblue;
+     stroke: white;
+  }
+  
+</style>
+
+<script type="text/javascript" src="d3.js"></script>
+
+<script>
+
+  var w = 20;
+  var h = 200;
+ 
+  var x = d3
+    .scale
+    .linear()
+    .domain([0, 1])
+    .range([0, w]);
+ 
+  var y = d3
+    .scale
+    .linear()
+    .domain([0, 100])
+    .rangeRound([0, h]);
+ 
+  var t = 1, // Time sequence for value number
+  data = d3.range(33).map(next); // Initial data
+ 
+  function next() {
+      return {
+          time: ++t,
+          value: Math.floor( (Math.random()*100) +1 )
+      };
+  }
+ 
+  var mychart = d3
+    .select("#viz")
+    .append("svg")
+    .attr("class", "chart")
+    .attr("width", w * data.length - 1)
+    .attr("height", h);
+  
+// Draw a thin base line for chart
+  mychart.append("line")
+    .attr("x1", 0)
+    .attr("x2", w * data.length)
+    .attr("y1", h - .5)
+    .attr("y2", h - .5)
+    .style("stroke", "#000");
+    
+  // What needs to take place after new data is available
+  function redraw() {
+      var rect = mychart
+          .selectAll("rect")
+          .data(data, function(d) { return d.time; });
+
+      rect.attr("x", function(d, i) { return x(i) - .5; });      
+
+      rect.enter()
+          .insert("rect", "line")
+          .attr("x", function(d, i) { return x(i + 1) - .5; })
+          .attr("y", function(d) { return h - y(d.value) - .5; })
+          .attr("width", w)
+          .attr("height", function(d) { return y(d.value); })
+          .attr("x", function(d, i) { return x(i) - .5; });
+ 
+      rect.exit()
+          .attr("x", function(d, i) { return x(i - 1) - .5; })
+          .remove();
+ 
+  }
+  
+  // Draw the initial chart
+  redraw();
+
+  setInterval(function() {
+      data.shift();
+      data.push(next());
+      redraw();
+      d3.timer.flush(); // avoid memory leak when in background tab
+  }, 100);
+
+</script>

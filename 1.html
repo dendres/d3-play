@@ -10,6 +10,8 @@
     that shows how messages move between agents.  
     made with
     <a href="http://d3js.org/">d3.js</a>
+    which requires knowledge of
+    <a href="https://developer.mozilla.org/en-US/docs/SVG/Element" >svg</a>
   </p>
   <div id="viz"></div>
 </body>
@@ -40,11 +42,33 @@
 
 <script>
 
+  // life_line: vertical line for a given actor|agent|object
+  // messages
+  //   synchronous: solid, triangle head
+  //   asynchronous: solid, stick head
+  //   response: dashed, stick head
+  //   loopback: curves back to the same life_line
+  //   time_constraint: diagonal line (like a response) representing a timeout constraint
+  // call_box: optional box on top of the life_line. a function|method responding to the message
+
+  // message:
+  //  from: message origin life_line
+  //  to: message destination life_line
+  //  async: flag as asynchronous or not
+  //  sequence: sequence number for this diagram
+  
+
+
+  // given a json representation of a message
+  // add the message to the sequence
+  // if a lifeline is missing, add it
+
+
+  var body = d3.select("body")
 
   console.log("drawing a chart made of svg");
   var data = [4, 33, 15, 16, 23, 42];
-  var svg_chart = d3
-    .select("body")
+  var svg_chart = body
     .append("svg")
     .attr("class", "svg_chart")
     .attr("width", 420)
@@ -82,9 +106,7 @@
     .text(String);
 
   console.log("drawing a chart made of divs");
-  var chart = d3
-    .select("body")
-    .append("div")
+  var chart = body.append("div")
     .attr("class", "chart");
 
   var data = [4, 8, 15, 16, 23, 42];
