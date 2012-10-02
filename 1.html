@@ -2,12 +2,7 @@
 <meta charset="utf-8">
 <body>
   <h1>Sequence</h1>
-  <p>
-    Is a 
-    <a href="http://en.wikipedia.org/wiki/Message_Sequence_Chart">Message Sequence Chart</a>
-    or a
-    <a href="http://en.wikipedia.org/wiki/Sequence_diagram">UML Sequence Diagram</a>
-    that shows how messages move between agents.  
+  <p id="summary" >
     made with
     <a href="http://d3js.org/">d3.js</a>
     which requires knowledge of
@@ -35,6 +30,14 @@
      stroke: white;
      fill: steelblue;
   }
+
+  .bar {
+     display: inline-block;
+     width: 20px;
+     height: 75px;   /* We'll override this later */
+     background-color: teal;
+     margin-right: 2px;
+}
   
 </style>
 
@@ -65,6 +68,51 @@
 
 
   var body = d3.select("body")
+
+  var d2 = [4, 8, 15, 16, 23, 42, 32, 15];
+
+  var svg = body
+    .append("svg")
+    .attr("class", "sssss")
+    .attr("width", 600)
+    .attr("height", 100);
+
+  svg.selectAll("circle")
+    .data(d2)
+    .enter()
+    .append("circle")
+    .attr("cx", function(d, i) {
+        return (i * d) + 10;
+    })
+    .attr("cy", 50)
+    .attr("r", function(d) {return d;})
+    .attr("fill", "yellow")
+    .attr("stroke", "orange")
+    .attr("stroke-width", function(d) {
+        return d/2;
+    })
+    .append("text")
+    .text(function(d) {
+        return d;
+    });
+
+
+  var dataset = [ 5, 10, 15, 20, 25 ];
+  body.append("div")
+    .data(dataset)
+    .enter()
+    .append("div")
+    .attr("class", "bar")
+    .style("height", function(d) {
+        return (d * 10) + "px";
+    });
+
+
+  body.select("#summary")
+    .data(d2)
+    .enter()
+    .append("p")
+    .text(function(d,i){return "d = " + d + " i = " + i})
 
   console.log("drawing a chart made of svg");
   var data = [4, 33, 15, 16, 23, 42];

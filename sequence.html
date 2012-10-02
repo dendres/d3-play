@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+  <h1>Sequence</h1>
+  <p id="summary" >
+    Is a 
+    <a href="http://en.wikipedia.org/wiki/Message_Sequence_Chart">Message Sequence Chart</a>
+    or a
+    <a href="http://en.wikipedia.org/wiki/Sequence_diagram">UML Sequence Diagram</a>
+    that shows how messages move between agents.  
+    made with
+    <a href="http://d3js.org/">d3.js</a>
+    which requires knowledge of
+    <a href="https://developer.mozilla.org/en-US/docs/SVG/Element" >svg</a>
+  </p>
+  <div id="viz"></div>
+</body>
+
+<style>
+
+  body {
+
+  }
+
+  .chart div {
+     font: 10px sans-serif;
+     background-color: steelblue;
+     text-align: right;
+     padding: 3px;
+     margin: 1px;
+     color: white;
+  }
+
+  .svg_chart rect {
+     stroke: white;
+     fill: steelblue;
+  }
+
+  .bar {
+     display: inline-block;
+     width: 20px;
+     height: 75px;   /* We'll override this later */
+     background-color: teal;
+     margin-right: 2px;
+}
+  
+</style>
+
+<script type="text/javascript" src="d3.js"></script>
+
+<script>
+
+  // life_line: vertical line for a given actor|agent|object
+  // messages
+  //   synchronous: solid, triangle head
+  //   asynchronous: solid, stick head
+  //   response: dashed, stick head
+  //   loopback: curves back to the same life_line
+  //   time_constraint: diagonal line (like a response) representing a timeout constraint
+  // call_box: optional box on top of the life_line. a function|method responding to the message
+
+  // message:
+  //  from: message origin life_line
+  //  to: message destination life_line
+  //  async: flag as asynchronous or not
+  //  sequence: sequence number for this diagram
+  
+
+
+  // given a json representation of a message
+  // add the message to the sequence
+  // if a lifeline is missing, add it
+
+
+  var body = d3.select("body")
+
+  var messages = [
+      {from: 'thing1',to: 'thing2', summary: 'an invite', description: 'some invite description'},
+      {from: 'thing2',to: 'thing1', summary: 'an ok', description: 'I said ok that time'},
+      {from: 'thing2',to: 'thing3', summary: 'else', description: 'I said something else'}
+  ];
+
+  var w = window.innerWidth;
+  var h = window.innerHeight - 50;
+  var l = messages.length;
+
+  var svg = body
+    .append("svg")
+    .attr("class", "sequence_diagram")
+    .attr("width", w)
+    .attr("height", h)
+
+  var life_line_pad = w / l / 3;
+  var life_line_width = d3.scale.linear()
+    .domain([0, l])
+    .range([life_line_pad, w]);
+
+  svg.selectAll("#life_line")
+    .data(messages)
+    .enter()
+    .append('text')
+    .text(function(d){return d.from})
+    .attr('x', function(d,i) { return life_line_width(i) })
+    .attr('y', 50)
+//    .attr('text-anchor', 'middle')
+
+  
+</script>
